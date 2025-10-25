@@ -17,7 +17,7 @@ export default function VerificarRol() {
         Number(fd.get("role"))
       );
       
-      setResult(`Resultado: ${response}`);
+      setResult(JSON.stringify(response, null, 2));
       setStatus("✅ Verificación completada");
     } catch (error) {
       setStatus("❌ Error: " + error);
