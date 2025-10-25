@@ -2,6 +2,8 @@ import { callReadOnlyFunction } from "@stacks/transactions";
 import { network, CONTRACT_ADDRESS, CONTRACT_NAME } from "./stacks";
 import { uintCV, standardPrincipalCV } from "@stacks/transactions";
 
+const SENDER_ADDRESS = "ST000000000000000000002AMW42H"; // any testnet addr
+
 export async function roGetLiga(id: number) {
   try {
     const result = await callReadOnlyFunction({
@@ -10,6 +12,7 @@ export async function roGetLiga(id: number) {
       functionName: "get-liga",
       functionArgs: [uintCV(id)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
@@ -26,6 +29,7 @@ export async function roGetClub(id: number) {
       functionName: "get-club",
       functionArgs: [uintCV(id)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
@@ -42,6 +46,7 @@ export async function roGetJugador(principal: string) {
       functionName: "get-jugador",
       functionArgs: [standardPrincipalCV(principal)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
@@ -58,6 +63,7 @@ export async function roGetJuego(id: number) {
       functionName: "get-juego",
       functionArgs: [uintCV(id)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
@@ -74,6 +80,7 @@ export async function roGetAlineacion(gameId: number, principal: string) {
       functionName: "get-alineacion",
       functionArgs: [uintCV(gameId), standardPrincipalCV(principal)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
@@ -90,6 +97,7 @@ export async function roGetEvento(gameId: number, index: number) {
       functionName: "get-evento",
       functionArgs: [uintCV(gameId), uintCV(index)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
@@ -106,6 +114,7 @@ export async function roTieneRol(who: string, role: number) {
       functionName: "tiene-rol",
       functionArgs: [standardPrincipalCV(who), uintCV(role)],
       network,
+      senderAddress: SENDER_ADDRESS,
     });
     return result;
   } catch (error) {
