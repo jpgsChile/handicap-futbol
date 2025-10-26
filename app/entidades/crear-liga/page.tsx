@@ -15,6 +15,7 @@ export default function CrearLiga() {
   const [nonceLoading, setNonceLoading] = useState<boolean>(false);
   const [possibleNextNonce, setPossibleNextNonce] = useState<number | null>(null);
   const [nonceError, setNonceError] = useState<string>("");
+  const [nonceOverride, setNonceOverride] = useState<string>("");
 
   useEffect(() => {
     if (userSession?.isUserSignedIn?.()) {
@@ -75,7 +76,11 @@ export default function CrearLiga() {
           network: testnetNetwork, // Usar testnet para wallet Leather
           appDetails: { name: APP_NAME, icon: APP_ICON },
           // Ayudas para Leather cuando no puede resolver nonce/fee
-          nonce: typeof possibleNextNonce === 'number' ? possibleNextNonce : undefined,
+          nonce: (() => {
+            const manual = Number(nonceOverride);
+            if (!Number.isNaN(manual) && manual >= 0) return manual;
+            return typeof possibleNextNonce === 'number' ? possibleNextNonce : undefined;
+          })(),
           fee: 2000, // uSTX: valor seguro para contratos pequeños en testnet
           anchorMode: AnchorMode.Any,
           postConditionMode: PostConditionMode.Deny,
@@ -119,6 +124,19 @@ export default function CrearLiga() {
                     nonceError ? `Error: ${nonceError}` :
                     (possibleNextNonce === null ? "No disponible" : `Siguiente nonce: ${possibleNextNonce}`)
                   }
+                </div>
+              )}
+              {walletAddr && (
+                <div className="row" style={{gap: 8, alignItems: "center"}}>
+                  <label style={{fontSize: 12, color: "#555"}}>Nonce (opcional)
+                    <input
+                      placeholder={possibleNextNonce !== null ? String(possibleNextNonce) : 'auto'}
+                      value={nonceOverride}
+                      onChange={(e) => setNonceOverride(e.target.value)}
+                      style={{minWidth: 110}}
+                    />
+                  </label>
+                  <button type="button" className="btn secondary" onClick={() => walletAddr && checkNonce(walletAddr)}>🔄 Refrescar</button>
                 </div>
               )}
               <div style={{display: "flex", gap: 8, flexWrap: "wrap"}}>
