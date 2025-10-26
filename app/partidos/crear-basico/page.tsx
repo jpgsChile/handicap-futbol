@@ -31,8 +31,8 @@ export default function CrearPartidoBasico() {
         </label>
         
         <label>
-          Fecha (Timestamp Unix) *
-          <input id="cb-fecha" type="number" required placeholder="1698765432" />
+          Fecha y hora (local) *
+          <input id="cb-datetime" type="datetime-local" required />
         </label>
         <HybridTransaction
           functionName="crear-juego-ff"
@@ -41,7 +41,13 @@ export default function CrearPartidoBasico() {
             () => Number((document.getElementById("cb-leagueId") as HTMLInputElement)?.value || 0),
             () => Number((document.getElementById("cb-clubLocal") as HTMLInputElement)?.value || 0),
             () => Number((document.getElementById("cb-clubVisit") as HTMLInputElement)?.value || 0),
-            () => Number((document.getElementById("cb-fecha") as HTMLInputElement)?.value || 0),
+            () => {
+              const el = document.getElementById("cb-datetime") as HTMLInputElement | null;
+              const v = el?.value || ""; // formato: YYYY-MM-DDTHH:mm
+              const ms = v ? new Date(v).getTime() : 0;
+              const secs = Math.floor(ms / 1000);
+              return Number.isFinite(secs) && secs > 0 ? secs : 0;
+            },
             () => "",
           ]}
           buttonText="Crear Partido"

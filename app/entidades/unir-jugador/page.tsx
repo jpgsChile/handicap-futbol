@@ -12,9 +12,8 @@ export default function UnirJugador() {
   const [clubId, setClubId] = useState<string>("");
   const [clubPreview, setClubPreview] = useState<{ nombre?: string } | null>(null);
   const [checking, setChecking] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<Array<{ id: number; nombre: string }>>([]);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [clubsOptions, setClubsOptions] = useState<Array<{ id: number; nombre: string }>>([]);
+  const [loadingClubs, setLoadingClubs] = useState<boolean>(false);
 
   useEffect(() => {
     if (userSession?.isUserSignedIn?.()) {
@@ -45,52 +44,34 @@ export default function UnirJugador() {
     }
   };
 
-  // Búsqueda simple off-chain (MVP): escanea IDs 1..50 y filtra por nombre
-  useEffect(() => {
-    const q = searchTerm.trim().toLowerCase();
-    if (!q) {
-      setSuggestions([]);
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      setIsSearching(true);
+  // Cargar lista de clubes (MVP): escanear IDs 1..50; se detiene tras 10 fallas consecutivas
+  const loadClubs = async () => {
+    setLoadingClubs(true);
+    const results: Array<{ id: number; nombre: string }> = [];
+    let misses = 0;
+    const maxScan = 50;
+    for (let i = 1; i <= maxScan; i++) {
+      if (misses >= 10) break;
       try {
-        const results: Array<{ id: number; nombre: string }> = [];
-        const maxScan = 50; // ajustar si es necesario
-        // Si es un número, priorizar ese ID
-        const maybeId = Number(q);
-        if (!Number.isNaN(maybeId) && maybeId > 0) {
-          try {
-            const res: any = await roGetClub(maybeId);
-            const nombre = res?.value?.value?.nombre?.value ?? res?.value?.value?.nombre;
-            if (nombre) results.push({ id: maybeId, nombre });
-          } catch {}
+        const res: any = await roGetClub(i);
+        const nombre: string | undefined = res?.value?.value?.nombre?.value ?? res?.value?.value?.nombre;
+        if (typeof nombre === 'string' && nombre.length > 0) {
+          results.push({ id: i, nombre });
+          misses = 0;
+        } else {
+          misses++;
         }
-        // Escaneo acotado
-        for (let i = 1; i <= maxScan; i++) {
-          if (results.length >= 10) break;
-          if (!Number.isNaN(maybeId) && i === maybeId) continue;
-          try {
-            const res: any = await roGetClub(i);
-            const nombre: string | undefined = res?.value?.value?.nombre?.value ?? res?.value?.value?.nombre;
-            if (typeof nombre === 'string' && nombre.toLowerCase().includes(q)) {
-              results.push({ id: i, nombre });
-            }
-          } catch {
-            // ignorar IDs inexistentes
-          }
-        }
-        if (!cancelled) setSuggestions(results);
-      } finally {
-        if (!cancelled) setIsSearching(false);
+      } catch {
+        misses++;
       }
-    }, 300);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [searchTerm]);
+    }
+    setClubsOptions(results);
+    setLoadingClubs(false);
+  };
+
+  useEffect(() => {
+    loadClubs();
+  }, []);
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -101,37 +82,23 @@ export default function UnirJugador() {
       </div>
       
       <form onSubmit={onSubmit} className="form" style={{ position: 'relative' }}>
-        <label>
-          Buscar club (nombre o ID)
-          <input
-            placeholder="Ej: municipal, 3, deportivo..."
-            value={searchTerm}
-            onChange={(e)=> setSearchTerm(e.target.value)}
-          />
-        </label>
-        {searchTerm && suggestions.length > 0 && (
-          <div style={{
-            position:'absolute',
-            background:'#fff',
-            border:'1px solid #e5e7eb',
-            boxShadow:'0 10px 25px rgba(0,0,0,0.08)',
-            borderRadius:10,
-            padding:8,
-            zIndex:40,
-            width:'100%',
-            maxWidth:560,
-          }}>
-            {suggestions.map(s => (
-              <div key={s.id} style={{padding:'6px 8px', borderRadius:8, cursor:'pointer'}}
-                onClick={()=>{ setClubId(String(s.id)); setSearchTerm(s.nombre); setSuggestions([]); handleCheckClub(String(s.id)); }}
-                onMouseDown={(e)=> e.preventDefault()}
-              >
-                {s.nombre} <span style={{color:'#6b7280'}}>(ID #{s.id})</span>
-              </div>
-            ))}
-            {isSearching && <div style={{padding:'6px 8px', color:'#6b7280'}}>Buscando…</div>}
-          </div>
-        )}
+        <div className="row" style={{alignItems:'flex-end', gap:8}}>
+          <label style={{flex:1}}>
+            Seleccionar Club
+            <select
+              value={clubId}
+              onChange={(e)=> { setClubId(e.target.value); handleCheckClub(e.target.value); }}
+            >
+              <option value="">-- Selecciona un club --</option>
+              {clubsOptions.map(c => (
+                <option key={c.id} value={c.id}>{c.nombre} (ID #{c.id})</option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className="btn secondary" onClick={loadClubs} disabled={loadingClubs}>
+            {loadingClubs ? 'Actualizando…' : 'Actualizar lista'}
+          </button>
+        </div>
         <label>
           ID del Club *
           <input 
@@ -155,15 +122,21 @@ export default function UnirJugador() {
             )}
           </div>
         )}
-        <HybridTransaction
-          functionName="jugador-unir-a-club"
-          contractNameOverride={CN_PLAYER}
-          functionArgs={[
-            () => Number(clubId || 0),
-          ]}
-          buttonText="Unir al Club"
-          successMessage="Jugador unido"
-        />
+        {addr && clubPreview ? (
+          <HybridTransaction
+            functionName="jugador-unir-a-club"
+            contractNameOverride={CN_PLAYER}
+            functionArgs={[
+              () => Number(clubId || 0),
+            ]}
+            buttonText="Unir al Club"
+            successMessage="Jugador unido"
+          />
+        ) : (
+          <button className="btn" disabled title={!addr ? 'Conecta tu wallet' : 'Selecciona un club válido'}>
+            Unir al Club
+          </button>
+        )}
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

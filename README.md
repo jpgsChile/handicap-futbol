@@ -1,3 +1,7 @@
+##Complemento de información, por problemas de Submission en DoraHacks
+
+https://docs.google.com/document/d/1eryEPgBPyueyjZzNhqLI_YNX8ObrgmU2CemJc3fMRsI/edit?pli=1&tab=t.0#heading=h.ru11sj6eazva
+
 ## Configuración de entorno (.env.local)
 
 Crea un archivo `.env.local` en la raíz del proyecto con estas variables (puedes ajustar las direcciones/nombres según despliegues):

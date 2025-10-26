@@ -11,20 +11,54 @@ export default function ConnectWallet() {
   const [addr, setAddr] = useState<string>("");
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [showWalletOptions, setShowWalletOptions] = useState<boolean>(false);
+  const [hasLeather, setHasLeather] = useState<boolean>(false);
+  const [hasXverse, setHasXverse] = useState<boolean>(false);
 
-  useEffect(() => {
+  const refreshAddr = () => {
     if (userSession.isUserSignedIn()) {
       const stx = userSession.loadUserData().profile?.stxAddress?.testnet;
       setAddr(stx || "");
+    } else {
+      setAddr("");
+    }
+  };
+
+  useEffect(() => {
+    refreshAddr();
+    if (typeof window !== 'undefined') {
+      const w: any = window as any;
+      const leather = !!(w.LeatherProvider) || (w.StacksProvider && typeof w.StacksProvider === 'object' && String(w.StacksProvider?.name || '').toLowerCase().includes('leather'));
+      const xverse = !!(w.XverseProviders && w.XverseProviders.stacks);
+      setHasLeather(leather);
+      setHasXverse(xverse);
+      const onFocus = () => refreshAddr();
+      const onVisibility = () => refreshAddr();
+      window.addEventListener('focus', onFocus);
+      document.addEventListener('visibilitychange', onVisibility);
+      return () => {
+        window.removeEventListener('focus', onFocus);
+        document.removeEventListener('visibilitychange', onVisibility);
+      };
     }
   }, []);
 
-  const connectWallet = (walletType: string) => {
+  const connectWallet = (_walletType: string) => {
     setIsConnecting(true);
     setShowWalletOptions(false);
     
-    console.log(`Intentando conectar con ${walletType}`);
-    
+    console.log(`Intentando conectar con ${_walletType}`);
+    try {
+      const w: any = typeof window !== 'undefined' ? (window as any) : {};
+      if (_walletType === 'Leather' && w.LeatherProvider) {
+        // Forzar Leather como provider activo
+        w.StacksProvider = w.LeatherProvider;
+      }
+      if (_walletType === 'Xverse' && w.XverseProviders?.stacks) {
+        // Forzar Xverse como provider activo
+        w.StacksProvider = w.XverseProviders.stacks;
+      }
+    } catch {}
+
     showConnect({
       userSession,
       appDetails: {
@@ -32,10 +66,9 @@ export default function ConnectWallet() {
         icon: APP_ICON,
       },
       onFinish: () => {
-        const stx = userSession.loadUserData().profile?.stxAddress?.testnet;
-        setAddr(stx || "");
+        refreshAddr();
         setIsConnecting(false);
-        console.log("Wallet conectada:", stx);
+        console.log("Wallet conectada");
       },
       onCancel: () => {
         setIsConnecting(false);
@@ -45,8 +78,11 @@ export default function ConnectWallet() {
   };
 
   const onSignOut = () => {
-    userSession.signUserOut("/");
-    setAddr("");
+    try {
+      userSession.signUserOut("/");
+    } finally {
+      setAddr("");
+    }
   };
 
   if (addr) {
@@ -64,16 +100,16 @@ export default function ConnectWallet() {
         <button 
           className="btn" 
           onClick={() => connectWallet("Xverse")}
-          disabled={isConnecting}
+          disabled={isConnecting || !hasXverse}
         >
-          {isConnecting ? "Conectando..." : "Xverse"}
+          {isConnecting ? "Conectando..." : (hasXverse ? "Xverse" : "Xverse (no detectado)")}
         </button>
         <button 
           className="btn secondary" 
-          onClick={() => connectWallet("Hiro")}
-          disabled={isConnecting}
+          onClick={() => connectWallet("Leather")}
+          disabled={isConnecting || !hasLeather}
         >
-          {isConnecting ? "Conectando..." : "Hiro"}
+          {isConnecting ? "Conectando..." : (hasLeather ? "Leather" : "Leather (no detectado)")}
         </button>
         <button 
           className="btn secondary" 
