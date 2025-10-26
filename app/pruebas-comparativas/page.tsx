@@ -59,8 +59,8 @@ export default function PruebasComparativas() {
 
   return (
     <div style={{maxWidth: 800, margin: "0 auto", padding: 24}}>
-      <h1>🔍 Pruebas Comparativas: Dev vs Wallet</h1>
-      <p>Prueba de transacción con Wallet Leather en Testnet.</p>
+      <h1>🔍 Prueba de transacción</h1>
+      <p>Prueba rápida de envío de transacción en Testnet.</p>
 
       {/* Información de la Wallet */}
       <div style={{marginBottom: 24, padding: 16, backgroundColor: "#f0f8ff", borderRadius: 8}}>
@@ -73,21 +73,12 @@ export default function PruebasComparativas() {
       {/* Botones de Prueba */}
       <div style={{display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 24}}>
         <button 
-          onClick={testDevMode} 
-          className="btn" 
-          disabled={isLoading}
-          style={{backgroundColor: "#10b981"}}
-        >
-          🛠️ Probar Solo Dev Mode
-        </button>
-        
-        <button 
           onClick={testWalletMode} 
           className="btn" 
           disabled={isLoading}
           style={{backgroundColor: "#f59e0b"}}
         >
-          👛 Probar Solo Wallet
+          👛 Enviar transacción
         </button>
         
         {/* Botón de ambos modos removido */}
