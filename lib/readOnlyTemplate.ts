@@ -2,7 +2,7 @@
 // Este archivo contiene ejemplos de cómo usar callReadOnlyFunction
 
 import { callReadOnlyFunction, stringUtf8CV, uintCV, standardPrincipalCV, boolCV, someCV, noneCV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME } from "@/lib/stacks";
+import { network, CONTRACT_ADDRESS } from "@/lib/stacks";
 
 const SENDER_ADDRESS = "ST000000000000000000002AMW42H"; // any testnet addr
 
@@ -11,7 +11,7 @@ export async function templateReadOnlyFunction() {
   try {
     const result = await callReadOnlyFunction({
       contractAddress: CONTRACT_ADDRESS,
-      contractName: CONTRACT_NAME,
+      contractName: "ff-views",
       functionName: "FUNCTION_NAME",
       functionArgs: [
         // Ejemplos de argumentos:
@@ -38,8 +38,8 @@ export async function templateReadOnlyFunction() {
 export async function getLigaExample(id: number) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
-    functionName: "get-liga",
+    contractName: "ff-views",
+    functionName: "liga-detalle",
     functionArgs: [uintCV(id)],
     network,
     senderAddress: SENDER_ADDRESS,
@@ -51,8 +51,8 @@ export async function getLigaExample(id: number) {
 export async function getClubExample(id: number) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
-    functionName: "get-club",
+    contractName: "ff-views",
+    functionName: "club-detalle",
     functionArgs: [uintCV(id)],
     network,
     senderAddress: SENDER_ADDRESS,
@@ -64,8 +64,8 @@ export async function getClubExample(id: number) {
 export async function getJugadorExample(wallet: string) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
-    functionName: "get-jugador",
+    contractName: "ff-views",
+    functionName: "jugador-detalle",
     functionArgs: [standardPrincipalCV(wallet)],
     network,
     senderAddress: SENDER_ADDRESS,
@@ -77,7 +77,7 @@ export async function getJugadorExample(wallet: string) {
 export async function tieneRolExample(who: string, role: number) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
+    contractName: "ff-views",
     functionName: "tiene-rol",
     functionArgs: [standardPrincipalCV(who), uintCV(role)],
     network,
@@ -90,8 +90,8 @@ export async function tieneRolExample(who: string, role: number) {
 export async function getJuegoExample(id: number) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
-    functionName: "get-juego",
+    contractName: "ff-views",
+    functionName: "juego-detalle",
     functionArgs: [uintCV(id)],
     network,
     senderAddress: SENDER_ADDRESS,
@@ -103,8 +103,8 @@ export async function getJuegoExample(id: number) {
 export async function getAlineacionExample(gameId: number, wallet: string) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
-    functionName: "get-alineacion",
+    contractName: "ff-views",
+    functionName: "alineacion-detalle",
     functionArgs: [uintCV(gameId), standardPrincipalCV(wallet)],
     network,
     senderAddress: SENDER_ADDRESS,
@@ -116,8 +116,8 @@ export async function getAlineacionExample(gameId: number, wallet: string) {
 export async function getEventoExample(gameId: number, index: number) {
   const result = await callReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
-    functionName: "get-evento",
+    contractName: "ff-views",
+    functionName: "evento-detalle",
     functionArgs: [uintCV(gameId), uintCV(index)],
     network,
     senderAddress: SENDER_ADDRESS,

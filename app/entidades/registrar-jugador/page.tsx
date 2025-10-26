@@ -1,41 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { stringUtf8CV, boolCV, someCV, noneCV, standardPrincipalCV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
 
 export default function RegistrarJugador() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "registrar-jugador-ff",
-        functionArgs: [
-          stringUtf8CV(String(fd.get("nombre"))),
-          stringUtf8CV(String(fd.get("apodo"))),
-          stringUtf8CV(String(fd.get("pos1"))),
-          stringUtf8CV(String(fd.get("pos2"))),
-          stringUtf8CV(String(fd.get("pos3"))),
-          boolCV(fd.get("isMinor") === "true"),
-          fd.get("consent") ? someCV(standardPrincipalCV(String(fd.get("consent")))) : noneCV(),
-          stringUtf8CV(String(fd.get("visibility")))
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Jugador registrado exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -45,17 +16,17 @@ export default function RegistrarJugador() {
       <form onSubmit={onSubmit} className="form">
         <label>
           Nombre Completo *
-          <input name="nombre" required maxLength={64} placeholder="Juan Pérez" />
+          <input id="player-nombre" required maxLength={64} placeholder="Juan Pérez" />
         </label>
         
         <label>
           Apodo *
-          <input name="apodo" required maxLength={64} placeholder="El Toro" />
+          <input id="player-apodo" required maxLength={64} placeholder="El Toro" />
         </label>
         
         <label>
           Posición Principal *
-          <select name="pos1" required>
+          <select id="player-pos1" required>
             <option value="">Seleccionar posición</option>
             <option value="GK">Portero (GK)</option>
             <option value="CB">Defensa Central (CB)</option>
@@ -72,7 +43,7 @@ export default function RegistrarJugador() {
         
         <label>
           Posición Secundaria
-          <select name="pos2">
+          <select id="player-pos2">
             <option value="">Ninguna</option>
             <option value="GK">Portero (GK)</option>
             <option value="CB">Defensa Central (CB)</option>
@@ -89,7 +60,7 @@ export default function RegistrarJugador() {
         
         <label>
           Posición Terciaria
-          <select name="pos3">
+          <select id="player-pos3">
             <option value="">Ninguna</option>
             <option value="GK">Portero (GK)</option>
             <option value="CB">Defensa Central (CB)</option>
@@ -106,7 +77,7 @@ export default function RegistrarJugador() {
         
         <label>
           ¿Es menor de edad?
-          <select name="isMinor" required>
+          <select id="player-isMinor" required>
             <option value="false">No</option>
             <option value="true">Sí</option>
           </select>
@@ -114,20 +85,33 @@ export default function RegistrarJugador() {
         
         <label>
           Consentimiento del Guardián (si es menor)
-          <input name="consent" placeholder="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM" />
+          <input id="player-consent" placeholder="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM" />
         </label>
         
         <label>
           Visibilidad *
-          <select name="visibility" required>
+          <select id="player-visibility" required>
             <option value="public">Público</option>
             <option value="restricted">Restringido</option>
           </select>
         </label>
         
-        <button type="submit" className="btn">
-          Registrar Jugador
-        </button>
+        <HybridTransaction
+          functionName="registrar-jugador-ff"
+          contractNameOverride="ff-player"
+          functionArgs={[
+            () => (document.getElementById("player-nombre") as HTMLInputElement)?.value,
+            () => (document.getElementById("player-apodo") as HTMLInputElement)?.value,
+            () => (document.getElementById("player-pos1") as HTMLSelectElement)?.value,
+            () => (document.getElementById("player-pos2") as HTMLSelectElement)?.value || "",
+            () => (document.getElementById("player-pos3") as HTMLSelectElement)?.value || "",
+            () => ((document.getElementById("player-isMinor") as HTMLSelectElement)?.value === 'true'),
+            () => ({ cv: 'optional-principal', value: (document.getElementById("player-consent") as HTMLInputElement)?.value || "" }),
+            () => (document.getElementById("player-visibility") as HTMLSelectElement)?.value,
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Registrar Jugador"
+          successMessage="Jugador registrado"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

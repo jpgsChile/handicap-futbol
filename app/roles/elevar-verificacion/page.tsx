@@ -1,35 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { uintCV, stringUtf8CV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
+import { CN_ATTEST } from "@/lib/stacks";
 
 export default function ElevarVerificacion() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "elevar-verificacion",
-        functionArgs: [
-          uintCV(Number(fd.get("gameId"))),
-          stringUtf8CV(String(fd.get("nivel")))
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Verificación elevada exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -39,12 +17,12 @@ export default function ElevarVerificacion() {
       <form onSubmit={onSubmit} className="form">
         <label>
           ID del Partido *
-          <input name="gameId" type="number" required placeholder="1" />
+          <input id="veri-gameId" type="number" required placeholder="1" />
         </label>
         
         <label>
           Nuevo Nivel de Verificación *
-          <select name="nivel" required>
+          <select id="veri-nivel" required>
             <option value="">Seleccionar nivel</option>
             <option value="club">Club</option>
             <option value="oficial">Oficial</option>
@@ -55,9 +33,16 @@ export default function ElevarVerificacion() {
           <strong>Nota:</strong> Solo los propietarios de clubes pueden elevar a "club" y solo las ligas pueden elevar a "oficial".
         </div>
         
-        <button type="submit" className="btn">
-          Elevar Verificación
-        </button>
+        <HybridTransaction
+          functionName="elevar-verificacion"
+          contractNameOverride={CN_ATTEST}
+          functionArgs={[
+            () => Number((document.getElementById("veri-gameId") as HTMLInputElement)?.value || 0),
+            () => (document.getElementById("veri-nivel") as HTMLSelectElement)?.value,
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Elevar Verificación"
+          successMessage="Verificación elevada"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

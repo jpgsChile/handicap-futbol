@@ -1,34 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { uintCV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
+import { CN_GAME } from "@/lib/stacks";
 
 export default function FinalizarPartido() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "cerrar-juego",
-        functionArgs: [
-          uintCV(Number(fd.get("gameId")))
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Partido finalizado exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -38,12 +17,17 @@ export default function FinalizarPartido() {
       <form onSubmit={onSubmit} className="form">
         <label>
           ID del Partido *
-          <input name="gameId" type="number" required placeholder="1" />
+          <input id="fnl-gameId" type="number" required placeholder="1" />
         </label>
-        
-        <button type="submit" className="btn">
-          Finalizar Partido
-        </button>
+        <HybridTransaction
+          functionName="cerrar-juego"
+        contractNameOverride={CN_GAME}
+          functionArgs={[
+            () => Number((document.getElementById("fnl-gameId") as HTMLInputElement)?.value || 0),
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Finalizar Partido"
+          successMessage="Partido finalizado"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

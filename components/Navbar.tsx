@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import Connect from "./Connect";
+import WalletStatus from "./WalletStatus";
+import Image from "next/image";
 
 export default function Navbar() {
   const [open, setOpen] = useState<string | null>(null);
@@ -54,9 +56,17 @@ export default function Navbar() {
         zIndex: 50,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <Link href="/" style={{ fontWeight: 600, fontSize: "18px" }}>
-          ⚽ FuturoFútbol
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", color: "inherit" }}>
+          <Image
+            src="/images/futurofutbol_logo.jpeg"
+            alt="Logo FuturoFútbol"
+            width={32}
+            height={32}
+            style={{ borderRadius: 6, objectFit: "cover" }}
+            priority
+          />
+          <span style={{ fontWeight: 700, fontSize: "18px", letterSpacing: 0.2 }}>FuturoFútbol</span>
         </Link>
 
         {/* Gestión de Entidades */}
@@ -176,12 +186,24 @@ export default function Navbar() {
               <Link href="/lecturas/evento" style={linkStyle}>
                 Obtener evento específico
               </Link>
+              <Link href="/lecturas/partido/resumen" style={linkStyle}>
+                Resumen de partido
+              </Link>
+              <Link href="/lecturas/verificacion" style={linkStyle}>
+                Estado de verificación
+              </Link>
+              <Link href="/diagnostico" style={linkStyle}>
+                Diagnóstico configuración
+              </Link>
             </div>
           )}
         </div>
       </div>
 
-      <Connect />
+      <div style={{display:"flex", alignItems:"center", gap:12}}>
+        <WalletStatus />
+        <Connect />
+      </div>
     </nav>
   );
 }

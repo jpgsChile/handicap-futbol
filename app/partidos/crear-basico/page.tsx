@@ -1,37 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { uintCV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
+import { CN_GAME } from "@/lib/stacks";
 
 export default function CrearPartidoBasico() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "crear-juego",
-        functionArgs: [
-          uintCV(Number(fd.get("leagueId"))),
-          uintCV(Number(fd.get("clubLocal"))),
-          uintCV(Number(fd.get("clubVisit"))),
-          uintCV(Number(fd.get("fecha")))
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Partido creado exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -41,27 +17,36 @@ export default function CrearPartidoBasico() {
       <form onSubmit={onSubmit} className="form">
         <label>
           ID de la Liga *
-          <input name="leagueId" type="number" required placeholder="1" />
+          <input id="cb-leagueId" type="number" required placeholder="1" />
         </label>
         
         <label>
           ID del Club Local *
-          <input name="clubLocal" type="number" required placeholder="1" />
+          <input id="cb-clubLocal" type="number" required placeholder="1" />
         </label>
         
         <label>
           ID del Club Visitante *
-          <input name="clubVisit" type="number" required placeholder="2" />
+          <input id="cb-clubVisit" type="number" required placeholder="2" />
         </label>
         
         <label>
           Fecha (Timestamp Unix) *
-          <input name="fecha" type="number" required placeholder="1698765432" />
+          <input id="cb-fecha" type="number" required placeholder="1698765432" />
         </label>
-        
-        <button type="submit" className="btn">
-          Crear Partido
-        </button>
+        <HybridTransaction
+          functionName="crear-juego-ff"
+          contractNameOverride={CN_GAME}
+          functionArgs={[
+            () => Number((document.getElementById("cb-leagueId") as HTMLInputElement)?.value || 0),
+            () => Number((document.getElementById("cb-clubLocal") as HTMLInputElement)?.value || 0),
+            () => Number((document.getElementById("cb-clubVisit") as HTMLInputElement)?.value || 0),
+            () => Number((document.getElementById("cb-fecha") as HTMLInputElement)?.value || 0),
+            () => "",
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Crear Partido"
+          successMessage="Partido creado"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

@@ -1,0 +1,27 @@
+{
+  "leagues": [
+    {
+      "id": 1,
+      "nombre": "Primera liga de Futbol",
+      "ubicacion": "Santiago de Chile",
+      "categoria": "barrial"
+    },
+    {
+      "id": 2,
+      "nombre": "Primera liga de Futbol",
+      "ubicacion": "Santiago de Chile",
+      "categoria": "barrial"
+    }
+  ],
+  "nextLeagueId": 2,
+  "clubs": [
+    {
+      "id": 1,
+      "nombre": "null",
+      "leagueId": 0,
+      "gkFijo": false
+    }
+  ],
+  "players": [],
+  "nextClubId": 1
+}

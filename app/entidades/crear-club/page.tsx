@@ -1,36 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { stringUtf8CV, uintCV, boolCV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
 
 export default function CrearClub() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "crear-club",
-        functionArgs: [
-          stringUtf8CV(String(fd.get("nombre"))),
-          uintCV(Number(fd.get("leagueId"))),
-          boolCV(fd.get("gkFijo") === "true")
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Club creado exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -40,25 +16,32 @@ export default function CrearClub() {
       <form onSubmit={onSubmit} className="form">
         <label>
           Nombre del Club *
-          <input name="nombre" required maxLength={64} placeholder="Club Deportivo Ejemplo" />
+          <input id="club-nombre" required maxLength={64} placeholder="Club Deportivo Ejemplo" />
         </label>
         
         <label>
           ID de la Liga *
-          <input name="leagueId" type="number" required placeholder="1" />
+          <input id="club-leagueId" type="number" required placeholder="1" />
         </label>
         
         <label>
           ¿Tiene portero fijo?
-          <select name="gkFijo" required>
+          <select id="club-gkFijo" required>
             <option value="false">No</option>
             <option value="true">Sí</option>
           </select>
         </label>
-        
-        <button type="submit" className="btn">
-          Crear Club
-        </button>
+        <HybridTransaction
+          functionName="crear-club"
+          functionArgs={[
+            () => (document.getElementById("club-nombre") as HTMLInputElement)?.value,
+            () => Number((document.getElementById("club-leagueId") as HTMLInputElement)?.value || 0),
+            () => ((document.getElementById("club-gkFijo") as HTMLSelectElement)?.value === 'true'),
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Crear Club"
+          successMessage="Club creado"
+          contractNameOverride="ff-club"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

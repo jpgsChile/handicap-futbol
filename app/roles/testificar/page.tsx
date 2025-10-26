@@ -1,38 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { uintCV, stringUtf8CV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
 
 export default function CrearTestificacion() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "attest",
-        functionArgs: [
-          stringUtf8CV(String(fd.get("entity"))),
-          uintCV(Number(fd.get("id"))),
-          uintCV(Number(fd.get("weight"))),
-          stringUtf8CV(String(fd.get("comment"))),
-          stringUtf8CV(String(fd.get("cid")))
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Testificación creada exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -42,32 +16,41 @@ export default function CrearTestificacion() {
       <form onSubmit={onSubmit} className="form">
         <label>
           Entidad *
-          <input name="entity" required maxLength={8} placeholder="jugador" />
+          <input id="att-entity" required maxLength={8} placeholder="juego|evento|perfil" />
         </label>
         
         <label>
           ID de la Entidad *
-          <input name="id" type="number" required placeholder="1" />
+          <input id="att-id" type="number" required placeholder="1" />
         </label>
         
         <label>
           Peso de la Testificación *
-          <input name="weight" type="number" required placeholder="5" />
+          <input id="att-weight" type="number" required placeholder="5" />
         </label>
         
         <label>
           Comentario *
-          <textarea name="comment" required maxLength={64} placeholder="Testificación positiva por buen comportamiento..." />
+          <textarea id="att-comment" required maxLength={64} placeholder="Testificación positiva por buen comportamiento..." />
         </label>
         
         <label>
           CID de Evidencia (IPFS) *
-          <input name="cid" required placeholder="QmXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx" />
+          <input id="att-cid" required placeholder="bafy..." />
         </label>
-        
-        <button type="submit" className="btn">
-          Crear Testificación
-        </button>
+        <HybridTransaction
+          functionName="attest"
+          contractNameOverride="ff-attest"
+          functionArgs={[
+            () => (document.getElementById("att-entity") as HTMLInputElement)?.value,
+            () => Number((document.getElementById("att-id") as HTMLInputElement)?.value || 0),
+            () => Number((document.getElementById("att-weight") as HTMLInputElement)?.value || 0),
+            () => (document.getElementById("att-comment") as HTMLTextAreaElement)?.value,
+            () => (document.getElementById("att-cid") as HTMLInputElement)?.value,
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Crear Testificación"
+          successMessage="Testificación creada"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>

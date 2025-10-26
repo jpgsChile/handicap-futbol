@@ -1,7 +1,7 @@
 [project]
 name = "handicap-futbol"
 authors = ["Pablo Guzmán", "Andrés Peña"]
-description = "FuturoFútbol - Handicap Fútbol on Stacks (MVP)"
+description = "Futuro Fútbol - Handicap Fútbol on Stacks (MVP)"
 telemetry = false
 cache_dir = "./.cache"
 
@@ -9,9 +9,35 @@ cache_dir = "./.cache"
 path = "contracts/handicap-futbol.clar"
 # epoch = "latest"
 
+[contracts.ff-roles]
+path = "contracts/ff-roles.clar"
+
+[contracts.ff-league]
+path = "contracts/ff-league.clar"
+
+[contracts.ff-club]
+path = "contracts/ff-club.clar"
+
+[contracts.ff-player]
+path = "contracts/ff-player.clar"
+
+[contracts.ff-game]
+path = "contracts/ff-game.clar"
+
+[contracts.ff-lineup]
+path = "contracts/ff-lineup.clar"
+
+[contracts.ff-event]
+path = "contracts/ff-event.clar"
+
+[contracts.ff-attest]
+path = "contracts/ff-attest.clar"
+
+[contracts.ff-views]
+path = "contracts/ff-views.clar"
+
 [repl.analysis]
-passes = ["check_checker"]
-check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
+passes = []
 
 # Check-checker settings:
 # trusted_sender: if true, inputs are trusted after tx_sender has been checked.

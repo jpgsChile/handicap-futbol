@@ -1,40 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { uintCV, stringUtf8CV, standardPrincipalCV } from "@stacks/transactions";
-import { network, CONTRACT_ADDRESS, CONTRACT_NAME, APP_NAME } from "@/lib/stacks";
+import HybridTransaction from "@/components/HybridTransaction";
+import { CN_EVENT } from "@/lib/stacks";
 
 export default function RegistrarEventoConIPFS() {
   const [status, setStatus] = useState<string>("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    
-    try {
-      await openContractCall({
-        contractAddress: CONTRACT_ADDRESS,
-        contractName: CONTRACT_NAME,
-        functionName: "registrar-evento-ff",
-        functionArgs: [
-          uintCV(Number(fd.get("gameId"))),
-          uintCV(Number(fd.get("clubId"))),
-          standardPrincipalCV(String(fd.get("wallet"))),
-          stringUtf8CV(String(fd.get("tipo"))),
-          uintCV(Number(fd.get("minuto"))),
-          stringUtf8CV(String(fd.get("meta"))),
-          stringUtf8CV(String(fd.get("evidenceCid")))
-        ],
-        network,
-        appDetails: { name: APP_NAME, icon: "" },
-        onFinish: () => setStatus("✅ Evento con evidencia IPFS registrado exitosamente"),
-        onCancel: () => setStatus("❌ Operación cancelada"),
-      });
-    } catch (error) {
-      setStatus("❌ Error: " + error);
-    }
-  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <div style={{maxWidth: 600, margin: "0 auto", padding: 24}}>
@@ -44,22 +17,22 @@ export default function RegistrarEventoConIPFS() {
       <form onSubmit={onSubmit} className="form">
         <label>
           ID del Partido *
-          <input name="gameId" type="number" required placeholder="1" />
+          <input id="evx-gameId" type="number" required placeholder="1" />
         </label>
         
         <label>
           ID del Club *
-          <input name="clubId" type="number" required placeholder="1" />
+          <input id="evx-clubId" type="number" required placeholder="1" />
         </label>
         
         <label>
           Wallet del Jugador *
-          <input name="wallet" required placeholder="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM" />
+          <input id="evx-wallet" required placeholder="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM" />
         </label>
         
         <label>
           Tipo de Evento *
-          <select name="tipo" required>
+          <select id="evx-tipo" required>
             <option value="">Seleccionar tipo</option>
             <option value="goal">Gol</option>
             <option value="assist">Asistencia</option>
@@ -73,22 +46,33 @@ export default function RegistrarEventoConIPFS() {
         
         <label>
           Minuto *
-          <input name="minuto" type="number" required placeholder="15" />
+          <input id="evx-minuto" type="number" required placeholder="15" />
         </label>
         
         <label>
           Metadata Adicional
-          <textarea name="meta" placeholder="Descripción del evento..." maxLength={64} />
+          <textarea id="evx-meta" placeholder="Descripción del evento..." maxLength={64} />
         </label>
         
         <label>
           Evidence CID (IPFS) *
-          <input name="evidenceCid" required placeholder="QmXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx" />
+          <input id="evx-evidenceCid" required placeholder="bafy..." />
         </label>
-        
-        <button type="submit" className="btn">
-          Registrar Evento con IPFS
-        </button>
+        <HybridTransaction
+          functionName="registrar-evento-ff"
+          contractNameOverride={CN_EVENT}
+          functionArgs={[
+            () => Number((document.getElementById("evx-gameId") as HTMLInputElement)?.value || 0),
+            () => Number((document.getElementById("evx-clubId") as HTMLInputElement)?.value || 0),
+            () => ({ cv: 'principal', value: (document.getElementById("evx-wallet") as HTMLInputElement)?.value }),
+            () => (document.getElementById("evx-tipo") as HTMLSelectElement)?.value,
+            () => Number((document.getElementById("evx-minuto") as HTMLInputElement)?.value || 0),
+            () => (document.getElementById("evx-meta") as HTMLTextAreaElement)?.value || "",
+            () => (document.getElementById("evx-evidenceCid") as HTMLInputElement)?.value,
+          ].map(f => (typeof f === 'function' ? f() : f))}
+          buttonText="Registrar Evento con IPFS"
+          successMessage="Evento + evidencia registrado"
+        />
       </form>
       
       {status && <div style={{marginTop: 16, padding: 12, backgroundColor: "#f0f0f0", borderRadius: 8}}>
