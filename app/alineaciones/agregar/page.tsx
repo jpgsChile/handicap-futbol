@@ -68,7 +68,7 @@ export default function AgregarAlineacion() {
             () => (document.getElementById("line-pos") as HTMLSelectElement)?.value,
             () => ((document.getElementById("line-titular") as HTMLSelectElement)?.value === 'true'),
             () => Number((document.getElementById("line-minInicio") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Agregar a Alineación"
           successMessage="Alineación agregada"
         />

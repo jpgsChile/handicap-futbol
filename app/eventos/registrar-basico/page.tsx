@@ -63,7 +63,7 @@ export default function RegistrarEventoBasico() {
             () => (document.getElementById("evt-tipo") as HTMLSelectElement)?.value,
             () => Number((document.getElementById("evt-minuto") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("evt-meta") as HTMLTextAreaElement)?.value || "",
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar Evento"
           successMessage="Evento registrado"
         />

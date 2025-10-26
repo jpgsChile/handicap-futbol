@@ -97,7 +97,7 @@ export default function HybridTransaction({
         disabled={isLoading}
         style={{width: "100%"}}
       >
-        {isLoading ? "🔄 Procesando..." : `${buttonText} (${mode === 'dev' ? 'Dev' : 'Wallet'})`}
+        {isLoading ? "🔄 Procesando..." : `${buttonText}`}
       </button>
 
       {status && (

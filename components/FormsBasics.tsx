@@ -22,7 +22,7 @@ export default function FormsBasics() {
             () => (document.getElementById("league-nombre") as HTMLInputElement)?.value,
             () => (document.getElementById("league-ubicacion") as HTMLInputElement)?.value,
             () => (document.getElementById("league-categoria") as HTMLInputElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Crear Liga"
           successMessage="Liga creada"
           contractNameOverride={CN_LEAGUE}
@@ -42,7 +42,7 @@ export default function FormsBasics() {
             () => (document.getElementById("club-nombre") as HTMLInputElement)?.value,
             () => Number((document.getElementById("club-leagueId") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("club-gkFijo") as HTMLInputElement)?.checked,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Crear Club"
           successMessage="Club creado"
           contractNameOverride={CN_CLUB}
@@ -81,7 +81,7 @@ export default function FormsBasics() {
             () => (document.getElementById("player-isMinor") as HTMLInputElement)?.checked,
             () => (document.getElementById("player-consent") as HTMLInputElement)?.value,
             () => (document.getElementById("player-visibility") as HTMLSelectElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar"
           successMessage="Jugador registrado"
           contractNameOverride={CN_PLAYER}
@@ -97,7 +97,7 @@ export default function FormsBasics() {
           functionName="jugador-unir-a-club"
           functionArgs={[
             () => Number((document.getElementById("join-clubId") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Unirme"
           successMessage="Jugador unido al club"
           contractNameOverride={CN_PLAYER}
@@ -124,7 +124,7 @@ export default function FormsBasics() {
             () => (document.getElementById("role-who") as HTMLInputElement)?.value,
             () => Number((document.getElementById("role-role") as HTMLSelectElement)?.value || 0),
             () => (document.getElementById("role-enabled") as HTMLInputElement)?.checked,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Asignar"
           successMessage="Rol actualizado"
           contractNameOverride={CN_ROLES}

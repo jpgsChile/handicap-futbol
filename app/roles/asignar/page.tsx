@@ -45,7 +45,7 @@ export default function AsignarRol() {
             () => ({ cv: 'principal', value: (document.getElementById("role-who") as HTMLInputElement)?.value }),
             () => Number((document.getElementById("role-role") as HTMLSelectElement)?.value || 0),
             () => ((document.getElementById("role-enabled") as HTMLSelectElement)?.value === 'true'),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Asignar Rol"
           successMessage="Rol asignado"
         />

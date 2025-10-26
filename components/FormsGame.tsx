@@ -23,7 +23,7 @@ export default function FormsGame() {
             () => Number((document.getElementById("match-clubVisit") as HTMLInputElement)?.value || 0),
             () => Number((document.getElementById("match-fecha") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("match-metadataCid") as HTMLInputElement)?.value || "",
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Crear Partido"
           successMessage="Partido creado"
           contractNameOverride={CN_GAME}
@@ -51,7 +51,7 @@ export default function FormsGame() {
             () => String((document.getElementById("lineup-pos") as HTMLInputElement)?.value).toUpperCase().slice(0,2),
             () => (document.getElementById("lineup-titular") as HTMLInputElement)?.checked,
             () => Number((document.getElementById("lineup-minInicio") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Agregar"
           successMessage="Alineación agregada"
           contractNameOverride={CN_LINEUP}
@@ -71,7 +71,7 @@ export default function FormsGame() {
             () => Number((document.getElementById("subout-gameId") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("subout-playerWallet") as HTMLInputElement)?.value,
             () => Number((document.getElementById("subout-minSalida") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Guardar"
           successMessage="Salida registrada"
           contractNameOverride={CN_LINEUP}
@@ -111,7 +111,7 @@ export default function FormsGame() {
             () => Number((document.getElementById("evt-minuto") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("evt-meta") as HTMLInputElement)?.value || "",
             () => (document.getElementById("evt-evidenceCid") as HTMLInputElement)?.value || "",
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar"
           successMessage="Evento + reputación registrado"
           contractNameOverride={CN_EVENT}
@@ -134,7 +134,7 @@ export default function FormsGame() {
           functionArgs={[
             () => Number((document.getElementById("elevate-gameId") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("elevate-nivel") as HTMLSelectElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Elevar"
           successMessage="Verificación elevada"
           contractNameOverride={CN_ATTEST}
@@ -150,7 +150,7 @@ export default function FormsGame() {
           functionName="cerrar-juego"
           functionArgs={[
             () => Number((document.getElementById("close-gameId") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Cerrar"
           successMessage="Partido cerrado"
           contractNameOverride={CN_GAME}

@@ -39,7 +39,7 @@ export default function ElevarVerificacion() {
           functionArgs={[
             () => Number((document.getElementById("veri-gameId") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("veri-nivel") as HTMLSelectElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Elevar Verificación"
           successMessage="Verificación elevada"
         />

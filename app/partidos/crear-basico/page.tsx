@@ -43,7 +43,7 @@ export default function CrearPartidoBasico() {
             () => Number((document.getElementById("cb-clubVisit") as HTMLInputElement)?.value || 0),
             () => Number((document.getElementById("cb-fecha") as HTMLInputElement)?.value || 0),
             () => "",
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Crear Partido"
           successMessage="Partido creado"
         />

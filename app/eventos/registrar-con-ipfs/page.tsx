@@ -69,7 +69,7 @@ export default function RegistrarEventoConIPFS() {
             () => Number((document.getElementById("evx-minuto") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("evx-meta") as HTMLTextAreaElement)?.value || "",
             () => (document.getElementById("evx-evidenceCid") as HTMLInputElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar Evento con IPFS"
           successMessage="Evento + evidencia registrado"
         />

@@ -35,7 +35,7 @@ export default function RegistrarSalida() {
             () => Number((document.getElementById("out-gameId") as HTMLInputElement)?.value || 0),
             () => ({ cv: 'principal', value: (document.getElementById("out-wallet") as HTMLInputElement)?.value }),
             () => Number((document.getElementById("out-minSalida") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar Salida"
           successMessage="Salida registrada"
         />

@@ -47,7 +47,7 @@ export default function CrearTestificacion() {
             () => Number((document.getElementById("att-weight") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("att-comment") as HTMLTextAreaElement)?.value,
             () => (document.getElementById("att-cid") as HTMLInputElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Crear Testificación"
           successMessage="Testificación creada"
         />

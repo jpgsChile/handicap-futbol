@@ -24,7 +24,7 @@ export default function FinalizarPartido() {
         contractNameOverride={CN_GAME}
           functionArgs={[
             () => Number((document.getElementById("fnl-gameId") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Finalizar Partido"
           successMessage="Partido finalizado"
         />

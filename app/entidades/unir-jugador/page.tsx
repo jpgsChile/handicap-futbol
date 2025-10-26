@@ -24,7 +24,7 @@ export default function UnirJugador() {
           contractNameOverride={CN_PLAYER}
           functionArgs={[
             () => Number((document.getElementById("join-clubId") as HTMLInputElement)?.value || 0),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Unir al Club"
           successMessage="Jugador unido"
         />

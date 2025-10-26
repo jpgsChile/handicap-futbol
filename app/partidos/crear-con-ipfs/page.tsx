@@ -48,7 +48,7 @@ export default function CrearPartidoConIPFS() {
             () => Number((document.getElementById("ci-clubVisit") as HTMLInputElement)?.value || 0),
             () => Number((document.getElementById("ci-fecha") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("ci-metadataCid") as HTMLInputElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Crear Partido con IPFS"
           successMessage="Partido creado con IPFS"
         />

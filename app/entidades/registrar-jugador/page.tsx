@@ -114,7 +114,7 @@ export default function RegistrarJugador() {
                 : { cv: 'optional-principal', value: null };
             },
             () => (document.getElementById("player-visibility") as HTMLSelectElement)?.value,
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar Jugador"
           successMessage="Jugador registrado"
         />

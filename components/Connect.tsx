@@ -27,7 +27,6 @@ export default function ConnectWallet() {
     
     showConnect({
       userSession,
-      network: testnetNetwork,
       appDetails: {
         name: APP_NAME,
         icon: APP_ICON,

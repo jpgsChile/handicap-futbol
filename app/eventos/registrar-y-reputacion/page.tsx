@@ -63,7 +63,7 @@ export default function RegistrarEventoYReputacion() {
             () => (document.getElementById("evr-tipo") as HTMLSelectElement)?.value,
             () => Number((document.getElementById("evr-minuto") as HTMLInputElement)?.value || 0),
             () => (document.getElementById("evr-meta") as HTMLTextAreaElement)?.value || "",
-          ].map(f => (typeof f === 'function' ? f() : f))}
+          ]}
           buttonText="Registrar Evento + Reputación"
           successMessage="Evento registrado"
         />
