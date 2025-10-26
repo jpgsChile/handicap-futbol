@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import Connect from "./Connect";
-import WalletStatus from "./WalletStatus";
 import Image from "next/image";
 
 export default function Navbar() {
@@ -21,21 +20,24 @@ export default function Navbar() {
 
   const menuStyle = {
     position: "absolute" as const,
+    top: "calc(100% + 6px)",
+    left: 0,
     background: "white",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-    minWidth: "220px",
-    padding: "8px",
-    zIndex: 20,
+    border: "1px solid #e5e7eb",
+    borderRadius: "10px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+    minWidth: "240px",
+    padding: "10px",
+    zIndex: 30,
   };
 
   const linkStyle = {
     display: "block",
-    padding: "6px 10px",
+    padding: "8px 12px",
     textDecoration: "none",
     color: "#111",
-    borderRadius: "6px",
+    borderRadius: "8px",
+    transition: "background 120ms ease",
   };
 
   const linkHover = {
@@ -66,12 +68,12 @@ export default function Navbar() {
             style={{ borderRadius: 6, objectFit: "cover" }}
             priority
           />
-          <span style={{ fontWeight: 700, fontSize: "18px", letterSpacing: 0.2 }}>FuturoFútbol</span>
+          <span style={{ fontWeight: 800, fontSize: "18px", letterSpacing: 0.3 }}>FuturoFútbol</span>
         </Link>
 
         {/* Gestión de Entidades */}
         <div style={groupStyle} onMouseLeave={() => setOpen(null)}>
-          <button className="btn secondary" onClick={() => toggle("entidades")}>
+          <button type="button" className="btn secondary" onClick={() => toggle("entidades")}>
             Gestión de Entidades ▾
           </button>
           {open === "entidades" && (
@@ -94,7 +96,7 @@ export default function Navbar() {
 
         {/* Gestión de Partidos */}
         <div style={groupStyle} onMouseLeave={() => setOpen(null)}>
-          <button className="btn secondary" onClick={() => toggle("partidos")}>
+          <button type="button" className="btn secondary" onClick={() => toggle("partidos")}>
             Gestión de Partidos ▾
           </button>
           {open === "partidos" && (
@@ -114,7 +116,7 @@ export default function Navbar() {
 
         {/* Alineaciones y Eventos */}
         <div style={groupStyle} onMouseLeave={() => setOpen(null)}>
-          <button className="btn secondary" onClick={() => toggle("alineaciones")}>
+          <button type="button" className="btn secondary" onClick={() => toggle("alineaciones")}>
             Alineaciones y Eventos ▾
           </button>
           {open === "alineaciones" && (
@@ -140,7 +142,7 @@ export default function Navbar() {
 
         {/* Roles y Testificación */}
         <div style={groupStyle} onMouseLeave={() => setOpen(null)}>
-          <button className="btn secondary" onClick={() => toggle("roles")}>
+          <button type="button" className="btn secondary" onClick={() => toggle("roles")}>
             Roles y Testificación ▾
           </button>
           {open === "roles" && (
@@ -163,7 +165,7 @@ export default function Navbar() {
 
         {/* Lecturas */}
         <div style={groupStyle} onMouseLeave={() => setOpen(null)}>
-          <button className="btn secondary" onClick={() => toggle("lecturas")}>
+          <button type="button" className="btn secondary" onClick={() => toggle("lecturas")}>
             Funciones de Lectura ▾
           </button>
           {open === "lecturas" && (
@@ -201,7 +203,6 @@ export default function Navbar() {
       </div>
 
       <div style={{display:"flex", alignItems:"center", gap:12}}>
-        <WalletStatus />
         <Connect />
       </div>
     </nav>
