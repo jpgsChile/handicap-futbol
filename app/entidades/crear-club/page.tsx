@@ -6,6 +6,11 @@ import HybridTransaction from "@/components/HybridTransaction";
 export default function CrearClub() {
   const [status, setStatus] = useState<string>("");
 
+  // Estado controlado para evitar valores undefined por getElementById
+  const [nombre, setNombre] = useState<string>("");
+  const [leagueId, setLeagueId] = useState<string>("");
+  const [gkFijo, setGkFijo] = useState<string>("false");
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
@@ -16,17 +21,33 @@ export default function CrearClub() {
       <form onSubmit={onSubmit} className="form">
         <label>
           Nombre del Club *
-          <input id="club-nombre" required maxLength={64} placeholder="Club Deportivo Ejemplo" />
+          <input 
+            required 
+            maxLength={64} 
+            placeholder="Club Deportivo Ejemplo" 
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
         </label>
         
         <label>
           ID de la Liga *
-          <input id="club-leagueId" type="number" required placeholder="1" />
+          <input 
+            type="number" 
+            required 
+            placeholder="1" 
+            value={leagueId}
+            onChange={(e) => setLeagueId(e.target.value)}
+          />
         </label>
         
         <label>
           ¿Tiene portero fijo?
-          <select id="club-gkFijo" required>
+          <select 
+            required 
+            value={gkFijo}
+            onChange={(e) => setGkFijo(e.target.value)}
+          >
             <option value="false">No</option>
             <option value="true">Sí</option>
           </select>
@@ -34,10 +55,10 @@ export default function CrearClub() {
         <HybridTransaction
           functionName="crear-club"
           functionArgs={[
-            () => (document.getElementById("club-nombre") as HTMLInputElement)?.value,
-            () => Number((document.getElementById("club-leagueId") as HTMLInputElement)?.value || 0),
-            () => ((document.getElementById("club-gkFijo") as HTMLSelectElement)?.value === 'true'),
-          ].map(f => (typeof f === 'function' ? f() : f))}
+            nombre,
+            Number(leagueId),
+            gkFijo === 'true',
+          ]}
           buttonText="Crear Club"
           successMessage="Club creado"
           contractNameOverride="ff-club"

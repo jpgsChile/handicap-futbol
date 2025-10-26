@@ -106,7 +106,13 @@ export default function RegistrarJugador() {
             () => (document.getElementById("player-pos2") as HTMLSelectElement)?.value || "",
             () => (document.getElementById("player-pos3") as HTMLSelectElement)?.value || "",
             () => ((document.getElementById("player-isMinor") as HTMLSelectElement)?.value === 'true'),
-            () => ({ cv: 'optional-principal', value: (document.getElementById("player-consent") as HTMLInputElement)?.value || "" }),
+            () => {
+              const isMinor = (document.getElementById("player-isMinor") as HTMLSelectElement)?.value === 'true';
+              const consent = (document.getElementById("player-consent") as HTMLInputElement)?.value || "";
+              return isMinor
+                ? { cv: 'optional-principal', value: consent }
+                : { cv: 'optional-principal', value: null };
+            },
             () => (document.getElementById("player-visibility") as HTMLSelectElement)?.value,
           ].map(f => (typeof f === 'function' ? f() : f))}
           buttonText="Registrar Jugador"

@@ -3,51 +3,22 @@
 import { useState } from "react";
 import { openContractCall } from "@stacks/connect";
 import { stringUtf8CV, AnchorMode, PostConditionMode } from "@stacks/transactions";
-import { testnetNetwork, CONTRACT_ADDRESS, APP_NAME, TEST_WALLET_ADDRESS, CN_LEAGUE, getTestnetContract } from "@/lib/stacks";
+import { testnetNetwork, CONTRACT_ADDRESS, APP_NAME, APP_ICON, TEST_WALLET_ADDRESS, CN_LEAGUE, getTestnetContract } from "@/lib/stacks";
 
 export default function PruebasComparativas() {
   const [results, setResults] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const testDevMode = async () => {
-    setIsLoading(true);
-    setResults("🔄 Probando Modo Desarrollo...\n");
-
-    try {
-      const response = await fetch('/api/transaction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contractAddress: CONTRACT_ADDRESS,
-          contractName: CN_LEAGUE,
-          functionName: 'crear-liga',
-          args: ["Liga Test Dev", "Santiago", "barrial"],
-          mode: 'dev'
-        })
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setResults(prev => prev + `✅ Modo Dev: EXITOSO\nResultado: ${result.data}\n\n`);
-      } else {
-        setResults(prev => prev + `❌ Modo Dev: ERROR\nError: ${result.error}\n\n`);
-      }
-    } catch (error) {
-      setResults(prev => prev + `❌ Modo Dev: ERROR\nError: ${error}\n\n`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Dev mode removido
 
   const testWalletMode = async () => {
     setIsLoading(true);
-    setResults(prev => prev + "🔄 Probando Modo Wallet Leather...\n");
+    setResults(prev => prev + "🔄 Probando transacción con Wallet...\n");
 
     try {
       const tn = getTestnetContract(CN_LEAGUE);
       if (!tn) {
-        setResults(prev => prev + `❌ Modo Wallet: Contrato ${CN_LEAGUE} no desplegado en Testnet. Configura NEXT_PUBLIC_TN_ADDR_FF_LEAGUE y reinicia.\n\n`);
+        setResults(prev => prev + `❌ Contrato ${CN_LEAGUE} no desplegado en Testnet. Configura NEXT_PUBLIC_TN_ADDR_FF_LEAGUE y reinicia.\n\n`);
         setIsLoading(false);
         return;
       }
@@ -62,34 +33,25 @@ export default function PruebasComparativas() {
           stringUtf8CV("barrial")
         ],
         network: testnetNetwork,
-        appDetails: { name: APP_NAME, icon: "/images/futurofutbol_logo.jpeg" },
+        appDetails: { name: APP_NAME, icon: APP_ICON },
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Deny,
         onFinish: (data) => {
-          setResults(prev => prev + `✅ Modo Wallet: EXITOSO\nTxID: ${data.txId}\nWallet: ${TEST_WALLET_ADDRESS}\n\n`);
+          setResults(prev => prev + `✅ Transacción enviada\nTxID: ${data.txId}\nWallet: ${TEST_WALLET_ADDRESS}\n\n`);
           setIsLoading(false);
         },
         onCancel: () => {
-          setResults(prev => prev + `❌ Modo Wallet: CANCELADO por usuario\n\n`);
-          setIsLoading(false);
-        },
-        onError: (error) => {
-          setResults(prev => prev + `❌ Modo Wallet: ERROR\nError: ${error.message || error}\n\n`);
+          setResults(prev => prev + `❌ Operación cancelada por usuario\n\n`);
           setIsLoading(false);
         },
       });
     } catch (error) {
-      setResults(prev => prev + `❌ Modo Wallet: ERROR\nError: ${error}\n\n`);
+      setResults(prev => prev + `❌ Error\nDetalles: ${error}\n\n`);
       setIsLoading(false);
     }
   };
 
-  const testBothModes = async () => {
-    setResults("🧪 Iniciando Pruebas Comparativas...\n\n");
-    await testDevMode();
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Pausa entre pruebas
-    await testWalletMode();
-  };
+  // Solo wallet
 
   const clearResults = () => {
     setResults("");
@@ -98,7 +60,7 @@ export default function PruebasComparativas() {
   return (
     <div style={{maxWidth: 800, margin: "0 auto", padding: 24}}>
       <h1>🔍 Pruebas Comparativas: Dev vs Wallet</h1>
-      <p>Compara el rendimiento entre el Modo Desarrollo y el Modo Wallet Leather.</p>
+      <p>Prueba de transacción con Wallet Leather en Testnet.</p>
 
       {/* Información de la Wallet */}
       <div style={{marginBottom: 24, padding: 16, backgroundColor: "#f0f8ff", borderRadius: 8}}>
@@ -128,14 +90,7 @@ export default function PruebasComparativas() {
           👛 Probar Solo Wallet
         </button>
         
-        <button 
-          onClick={testBothModes} 
-          className="btn" 
-          disabled={isLoading}
-          style={{backgroundColor: "#3b82f6"}}
-        >
-          🔄 Probar Ambos Modos
-        </button>
+        {/* Botón de ambos modos removido */}
         
         <button 
           onClick={clearResults} 
@@ -167,10 +122,8 @@ export default function PruebasComparativas() {
       <div style={{marginTop: 24, padding: 16, backgroundColor: "#e8f5e8", borderRadius: 8}}>
         <h3>📈 Análisis de Resultados</h3>
         <div style={{fontSize: "14px"}}>
-          <p><strong>✅ Modo Dev Exitoso:</strong> El código funciona correctamente</p>
-          <p><strong>❌ Modo Wallet Falla:</strong> Problema específico de wallet/conexión</p>
-          <p><strong>❌ Ambos Fallan:</strong> Problema en el contrato o configuración</p>
-          <p><strong>✅ Ambos Exitosos:</strong> Sistema funcionando correctamente</p>
+          <p><strong>✅ Exitoso:</strong> Sistema funcionando correctamente</p>
+          <p><strong>❌ Falla:</strong> Revisar configuración de Wallet/Testnet y contratos</p>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
-import { StacksTestnet, StacksDevnet } from "@stacks/network";
+import { StacksTestnet } from "@stacks/network";
 
 // Configuración de red - cambiar según el modo
-export const isDevMode = process.env.NODE_ENV === 'development';
-export const network = isDevMode ? new StacksDevnet() : new StacksTestnet();
+export const isDevMode = false;
+export const network = new StacksTestnet();
 
 // Para pruebas con wallet Leather, usar testnet
 export const testnetNetwork = new StacksTestnet();

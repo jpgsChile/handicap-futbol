@@ -21,26 +21,7 @@ export default function Page() {
           Utiliza la navegación superior para acceder a todas las funcionalidades del contrato inteligente.
         </p>
         
-        {/* Información del Modo Híbrido */}
-        <div style={{
-          padding: 16, 
-          backgroundColor: "#e8f5e8", 
-          borderRadius: 8, 
-          border: "1px solid #4ade80",
-          marginBottom: 24
-        }}>
-          <h3 style={{color: "#166534", margin: "0 0 8px 0"}}>🛠️ Modo Híbrido Disponible</h3>
-          <p style={{margin: 0, fontSize: "14px", color: "#166534"}}>
-            <strong>Nuevo:</strong> Todas las páginas ahora incluyen un selector de modo que te permite elegir entre:
-          </p>
-          <ul style={{margin: "8px 0 0 0", paddingLeft: 20, fontSize: "14px", color: "#166534"}}>
-            <li><strong>🛠️ Modo Desarrollo:</strong> Ejecuta transacciones directamente sin wallet (recomendado)</li>
-            <li><strong>👛 Modo Wallet:</strong> Usa wallet tradicional (puede fallar con pantalla negra)</li>
-          </ul>
-          <p style={{margin: "8px 0 0 0", fontSize: "12px", color: "#166534"}}>
-            <strong>Recomendación:</strong> Usa el Modo Desarrollo para evitar problemas de wallet y desarrollar más rápido.
-          </p>
-        </div>
+        {/* Modo Híbrido eliminado: solo Wallet/Testnet */}
       </header>
 
       <div style={{display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24}}>
@@ -99,15 +80,7 @@ export default function Page() {
           </ul>
         </div>
 
-        <div className="form">
-          <h3>🔗 Enlaces Útiles</h3>
-          <p>Recursos del entorno de desarrollo.</p>
-          <ul style={{paddingLeft: 20}}>
-            <li><a href="http://localhost:3999/doc" target="_blank">Stacks API</a></li>
-            <li><a href="http://localhost:8000" target="_blank">Stacks Explorer</a></li>
-            <li><a href="http://localhost:8001" target="_blank">Bitcoin Explorer</a></li>
-          </ul>
-        </div>
+        {/* Enlaces locales de devnet eliminados */}
       </div>
     </div>
   );

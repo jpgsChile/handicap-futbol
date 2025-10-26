@@ -9,7 +9,7 @@
     "lint": "echo \"(lint opcional)\"",
     "validate": "bash ./test-contract.sh",
     "validate:soft": "VALIDATE_STRICT=0 bash ./test-contract.sh",
-    "deploy:testnet:plan": "clarinet deployments generate --testnet",
+    "deploy:testnet:plan": "clarinet deployments generate --testnet --low-cost",
     "deploy:testnet:apply": "clarinet deployments apply --testnet --no-dashboard"
   },
   "dependencies": {
