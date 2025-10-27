@@ -1,19 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { roGetClub } from "@/lib/readOnly";
+import { roGetClub, roGetLiga } from "@/lib/readOnly";
 
 export default function ObtenerClub() {
   const [status, setStatus] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [ui, setUi] = useState<{ nombre?: string; leagueId?: number; gk?: boolean; leagueName?: string } | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     
     try {
-      const response = await roGetClub(Number(fd.get("id")));
+      const id = Number(fd.get("id"));
+      const response: any = await roGetClub(id);
       setResult(`Resultado: ${JSON.stringify(response, null, 2)}`);
+      if (response?.success && response?.value?.value) {
+        const v = response.value.value;
+        const get = (k: string) => (v?.[k]?.value ?? v?.[k]);
+        const leagueId = Number(get('league-id') ?? 0);
+        let leagueName: string | undefined;
+        if (leagueId > 0) {
+          try {
+            const liga: any = await roGetLiga(leagueId);
+            const lv = liga?.value?.value;
+            leagueName = String(lv?.['nombre']?.value ?? lv?.['nombre'] ?? '');
+          } catch {}
+        }
+        setUi({
+          nombre: String(get('nombre') ?? ''),
+          leagueId,
+          gk: Boolean(get('gk-fijo')),
+          leagueName,
+        });
+      } else {
+        setUi(null);
+      }
       setStatus("✅ Información obtenida exitosamente");
     } catch (error) {
       setStatus("❌ Error: " + error);
@@ -40,10 +63,25 @@ export default function ObtenerClub() {
         {status}
       </div>}
       
-      {result && <div style={{marginTop: 16, padding: 12, backgroundColor: "#e8f5e8", borderRadius: 8}}>
-        <strong>Información del Club:</strong><br />
-        <pre style={{whiteSpace: "pre-wrap", fontSize: "12px"}}>{result}</pre>
-      </div>}
+      {ui && (
+        <div style={{marginTop: 16, padding: 16, backgroundColor: "#f9fafb", borderRadius: 8, border: '1px solid #e5e7eb'}}>
+          <h3 style={{marginTop:0}}>Información del Club</h3>
+          <div style={{display:'grid', gridTemplateColumns:'180px 1fr', rowGap:8}}>
+            <div style={{color:'#6b7280'}}>Nombre de club</div>
+            <div>{ui.nombre || '-'}</div>
+            <div style={{color:'#6b7280'}}>Nombre de liga</div>
+            <div>{ui.leagueName || `(ID ${ui.leagueId ?? '-'})`}</div>
+            <div style={{color:'#6b7280'}}>Portero fijo</div>
+            <div>{ui.gk ? 'Sí' : 'No'}</div>
+          </div>
+        </div>
+      )}
+      {result && (
+        <details style={{marginTop:12}}>
+          <summary style={{cursor:'pointer'}}>Ver respuesta completa</summary>
+          <pre style={{whiteSpace: 'pre-wrap', fontSize: 12}}>{result}</pre>
+        </details>
+      )}
     </div>
   );
 }

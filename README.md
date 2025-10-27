@@ -2,6 +2,10 @@
 
 https://docs.google.com/document/d/1eryEPgBPyueyjZzNhqLI_YNX8ObrgmU2CemJc3fMRsI/edit?pli=1&tab=t.0#heading=h.ru11sj6eazva
 
+##Link de Vercel
+
+https://handicap-futbol.vercel.app/
+
 ## Configuración de entorno (.env.local)
 
 Crea un archivo `.env.local` en la raíz del proyecto con estas variables (puedes ajustar las direcciones/nombres según despliegues):
@@ -357,7 +361,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 - GitHub: [@jpgsChile](https://github.com/jpgsChile)
 - Proyecto: [Handicap-Futbol](https://github.com/jpgsChile/handicap-futbol)
-
+- Vercel: [Handicap-Futbol-Web] https://handicap-futbol.vercel.app/
 ---
 
 **⚽ ¡Construyendo el futuro del fútbol sobre blockchain! ⚽**
