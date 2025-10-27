@@ -100,16 +100,18 @@ export default function ConnectWallet() {
         <button 
           className="btn" 
           onClick={() => connectWallet("Xverse")}
-          disabled={isConnecting || !hasXverse}
+          disabled={isConnecting}
+          title={hasXverse ? "Conectar con Xverse" : "Xverse no detectado: abre la extensión y recarga si no aparece"}
         >
-          {isConnecting ? "Conectando..." : (hasXverse ? "Xverse" : "Xverse (no detectado)")}
+          {isConnecting ? "Conectando..." : "Xverse"}
         </button>
         <button 
           className="btn secondary" 
           onClick={() => connectWallet("Leather")}
-          disabled={isConnecting || !hasLeather}
+          disabled={isConnecting}
+          title={hasLeather ? "Conectar con Leather" : "Leather no detectado: abre la extensión y recarga si no aparece"}
         >
-          {isConnecting ? "Conectando..." : (hasLeather ? "Leather" : "Leather (no detectado)")}
+          {isConnecting ? "Conectando..." : "Leather"}
         </button>
         <button 
           className="btn secondary" 
